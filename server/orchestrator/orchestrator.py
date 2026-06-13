@@ -71,8 +71,9 @@ class Orchestrator:
         # Initialise analyser (LLM via subprocess/fallback)
         self._analyser = StressAnalyser(self.config.llm)
 
-        # Create pollers for enabled channels
-        self._pollers = self._init_pollers()
+        # Create pollers for enabled channels (skip if already injected, e.g. by simulation)
+        if not self._pollers:
+            self._pollers = self._init_pollers()
 
         if not self._pollers:
             logger.warning(

@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import os
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from pathlib import Path
@@ -18,6 +19,7 @@ from pydantic import BaseModel
 
 from orchestrator import Orchestrator, OrchestratorConfig
 from orchestrator import social_api
+from simulator.api import register_simulation_routes
 
 logger = logging.getLogger("neurosync.api")
 
@@ -73,7 +75,51 @@ async def lifespan(app: FastAPI):
     """Start the orchestrator on boot, shut down on exit."""
     logger.info("NeuroSync API starting...")
     config = OrchestratorConfig.from_env()
+
+    # ------------------------------------------------------------------
+    # Simulation mode: disable real channels, inject simulated pollers
+    # ------------------------------------------------------------------
+    sim_mode = os.environ.get("NEUROSYNC_SIMULATION_MODE", "").lower() == "true"
+    if sim_mode:
+        logger.info("🎮 SIMULATION MODE ENABLED — disabling real Discord/Gmail pollers")
+        config.discord.enabled = False
+        config.email.enabled = False
+
     orchestrator = Orchestrator(config)
+
+    if sim_mode:
+        from simulator.generator import MessageGenerator
+        from simulator.poller import SimulatedPoller
+        from orchestrator.config import ChannelSettings
+
+        gen = MessageGenerator(seed=42)
+        gen.generate_pool(1000)
+
+        sim_discord = SimulatedPoller(
+            channel_name="discord_sim",
+            settings=ChannelSettings(enabled=True, max_messages_per_poll=50, poll_interval_seconds=15),
+            generator=gen,
+            scenario="normal_day",
+            seed=42,
+        )
+        sim_gmail = SimulatedPoller(
+            channel_name="gmail_sim",
+            settings=ChannelSettings(enabled=True, max_messages_per_poll=20, poll_interval_seconds=15),
+            generator=gen,
+            scenario="normal_day",
+            seed=43,
+        )
+        orchestrator._pollers = [sim_discord, sim_gmail]
+
+        # Register with simulation control API so /sim/status works
+        from simulator.api import register_simulated_poller
+        register_simulated_poller(sim_discord)
+        register_simulated_poller(sim_gmail)
+
+        logger.info(
+            "🎮 Injected %d simulated pollers (discord_sim, gmail_sim) — pool: %d messages",
+            len(orchestrator._pollers), gen.total,
+        )
 
     state.orchestrator = orchestrator
 
@@ -286,3 +332,8 @@ def _get_orchestrator():
 
 
 social_api.register_social_routes(app, _get_orchestrator)
+
+# ======================================================================
+# Register Simulation Control Routes (always available)
+# ======================================================================
+register_simulation_routes(app)
