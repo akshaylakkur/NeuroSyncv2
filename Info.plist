@@ -30,6 +30,8 @@
     <string>NeuroSync needs to read health data to provide stress analysis.</string>
     <key>NSRemindersUsageDescription</key>
     <string>NeuroSync creates reminders to help you manage stress when it detects elevated levels.</string>
+    <key>NSRemindersFullAccessUsageDescription</key>
+    <string>NeuroSync needs full access to Reminders to create stress management reminders when it detects elevated stress from your health data or social sentiment.</string>
     <key>UIApplicationSceneManifest</key>
     <dict>
         <key>UIApplicationSupportsMultipleScenes</key>

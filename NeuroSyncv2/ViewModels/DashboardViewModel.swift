@@ -1,5 +1,5 @@
 import Foundation
-import Combine
+import SwiftUI
 import EventKit
 
 @MainActor
@@ -26,7 +26,6 @@ final class DashboardViewModel: ObservableObject {
     private let eventKitService = EventKitService.shared
 
     private var refreshTask: Task<Void, Never>?
-    private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialization
 

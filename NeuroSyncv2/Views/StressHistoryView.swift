@@ -47,51 +47,54 @@ struct StressHistoryView: View {
         Group {
             if historyVM.filteredEvents.isEmpty {
                 VStack(spacing: 8) {
-                Spacer()
-                Image(systemName: "brain")
-                    .font(.system(size: 48))
-                    .foregroundColor(.secondary)
-                Text("No Stress Events")
-                    .font(.title2)
-                    .fontWeight(.semibold)
-                    .foregroundColor(.secondary)
-                Text("Your analysis history will appear here after the first stress check.")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-            }
-            .frame(maxWidth: .infinity)
-        } else {
-            List {
-                ForEach(historyVM.groupedByDate, id: \.0) { date, events in
-                    Section {
-                        ForEach(events) { event in
-                            NavigationLink {
-                                StressEventDetailView(event: event)
-                            } label: {
-                                StressEventRow(event: event)
+                    Spacer()
+                    Image(systemName: "brain")
+                        .font(.system(size: 48))
+                        .foregroundColor(.secondary)
+                    Text("No Stress Events")
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.secondary)
+                    Text("Your analysis history will appear here after the first stress check.")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+                .frame(maxWidth: .infinity)
+            } else {
+                List {
+                    ForEach(historyVM.groupedByDate, id: \.0) { date, events in
+                        Section {
+                            ForEach(events) { event in
+                                NavigationLink {
+                                    StressEventDetailView(event: event)
+                                } label: {
+                                    StressEventRow(event: event)
+                                }
                             }
-                        }
-                    } header: {
-                        Text(date, format: .dateTime.weekday().month().day().year())
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                }
-                .onDelete { indexSet in
-                    let allEvents = historyVM.stressEvents
-                    let toDelete = indexSet.map { historyVM.filteredEvents[$0] }
-                    for event in toDelete {
-                        if let idx = allEvents.firstIndex(of: event) {
-                            historyVM.stressEvents.remove(at: idx)
+                            .onDelete { indexSet in
+                                deleteEvents(at: indexSet, from: events)
+                            }
+                        } header: {
+                            Text(date, format: .dateTime.weekday().month().day().year())
+                                .font(.caption)
+                                .foregroundColor(.secondary)
                         }
                     }
-                    dashboardVM.stressEvents = historyVM.stressEvents
-                    BackgroundTaskService.saveEvents(historyVM.stressEvents)
                 }
-            }
-            .listStyle(.insetGrouped)
+                .listStyle(.insetGrouped)
             }
         }
+    }
+
+    private func deleteEvents(at indexSet: IndexSet, from sectionEvents: [StressEvent]) {
+        for index in indexSet {
+            let eventToDelete = sectionEvents[index]
+            if let idx = historyVM.stressEvents.firstIndex(of: eventToDelete) {
+                historyVM.stressEvents.remove(at: idx)
+            }
+        }
+        dashboardVM.stressEvents = historyVM.stressEvents
+        BackgroundTaskService.saveEvents(historyVM.stressEvents)
     }
 
     private func color(for level: StressLevel) -> Color {

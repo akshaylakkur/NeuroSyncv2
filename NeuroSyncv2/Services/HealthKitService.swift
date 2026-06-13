@@ -2,12 +2,11 @@ import Foundation
 import HealthKit
 
 /// Service for reading health metrics from HealthKit.
-final class HealthKitService {
+final class HealthKitService: @unchecked Sendable {
 
     static let shared = HealthKitService()
 
     private let healthStore = HKHealthStore()
-    private let isoFormatter = ISO8601DateFormatter()
 
     // MARK: - HealthKit Types
 
@@ -69,7 +68,7 @@ final class HealthKitService {
 
     // MARK: - Observer Query
 
-    func startObservingChanges(handler: @escaping () -> Void) {
+    func startObservingChanges(handler: @escaping @Sendable () -> Void) {
         for type in allReadTypes {
             guard let sampleType = type as? HKSampleType else { continue }
             let query = HKObserverQuery(sampleType: sampleType, predicate: nil) { _, _, _ in
@@ -111,7 +110,6 @@ final class HealthKitService {
                     continuation.resume(returning: nil as Double?)
                     return
                 }
-                // Find the most recent sleep session (samples sorted newest first)
                 let sleepSamples = samples.filter {
                     $0.value == HKCategoryValueSleepAnalysis.asleepUnspecified.rawValue
                         || $0.value == HKCategoryValueSleepAnalysis.asleepDeep.rawValue
@@ -122,7 +120,6 @@ final class HealthKitService {
                     continuation.resume(returning: nil as Double?)
                     return
                 }
-                // Walk backwards from the newest sample, grouping those within 3h
                 let newestEnd = sleepSamples[0].endDate
                 var sessionStart = sleepSamples[0].startDate
                 for sample in sleepSamples {

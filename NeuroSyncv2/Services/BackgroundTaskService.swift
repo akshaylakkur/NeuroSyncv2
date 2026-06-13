@@ -42,62 +42,42 @@ final class BackgroundTaskService {
         // Reschedule the next check
         scheduleBackgroundCheck()
 
-        let queue = OperationQueue()
-        queue.maxConcurrentOperationCount = 1
-
         task.expirationHandler = {
-            queue.cancelAllOperations()
+            // Nothing to cancel — the Task handles cancellation via Task.isCancelled
         }
 
-        let operation = AsyncBlockOperation { [weak self] completion in
-            guard let self = self else {
-                completion()
-                return
-            }
+        // Run on MainActor since we interact with MainActor-isolated services
+        Task { @MainActor in
+            defer { task.setTaskCompleted(success: true) }
 
-            Task {
-                do {
-                    // Fetch metrics
-                    let metrics = try await self.healthKitService.fetchLatestMetrics()
+            guard !Task.isCancelled else { return }
 
-                    // Load API key from Keychain
-                    let apiKey = KeychainHelper.load(key: AppConfig.apiKeyAccount)
+            do {
+                let metrics = await healthKitService.fetchLatestMetrics()
 
-                    guard let key = apiKey, !key.isEmpty else {
-                        completion()
-                        return
+                let apiKey = KeychainHelper.load(key: AppConfig.apiKeyAccount)
+                guard let key = apiKey, !key.isEmpty else { return }
+
+                let result = try await nimService.analyzeStress(metrics: metrics, apiKey: key)
+
+                var event = StressEvent(metrics: metrics, result: result)
+
+                if result.stressLevel == .high {
+                    do {
+                        let created = try await eventKitService.createStressReminder(suggestion: result.suggestion)
+                        event.reminderCreated = created
+                    } catch {
+                        event.reminderCreated = false
                     }
-
-                    // Analyze stress
-                    let result = try await self.nimService.analyzeStress(metrics: metrics, apiKey: key)
-
-                    // Save event to UserDefaults
-                    var event = StressEvent(metrics: metrics, result: result)
-
-                    // If high stress, create reminder
-                    if result.stressLevel == .high {
-                        do {
-                            let created = try await self.eventKitService.createStressReminder(suggestion: result.suggestion)
-                            event.reminderCreated = created
-                        } catch {
-                            event.reminderCreated = false
-                        }
-                    }
-
-                    // Persist
-                    var events = Self.loadEvents()
-                    events.insert(event, at: 0)
-                    Self.saveEvents(events)
-
-                    task.setTaskCompleted(success: true)
-                } catch {
-                    task.setTaskCompleted(success: false)
                 }
-                completion()
+
+                var events = Self.loadEvents()
+                events.insert(event, at: 0)
+                Self.saveEvents(events)
+            } catch {
+                task.setTaskCompleted(success: false)
             }
         }
-
-        queue.addOperation(operation)
     }
 
     // MARK: - Persistence Helpers
@@ -114,38 +94,5 @@ final class BackgroundTaskService {
         let encoder = JSONEncoder()
         guard let data = try? encoder.encode(events) else { return }
         UserDefaults.standard.set(data, forKey: AppConfig.stressEventsKey)
-    }
-}
-
-// MARK: - Async Block Operation
-
-/// A simple Operation subclass that runs an async block with a completion callback.
-private class AsyncBlockOperation: Operation {
-    private let block: (@escaping () -> Void) -> Void
-    private var _isExecuting = false
-    private var _isFinished = false
-
-    override var isAsynchronous: Bool { true }
-    override var isExecuting: Bool { _isExecuting }
-    override var isFinished: Bool { _isFinished }
-
-    init(block: @escaping (@escaping () -> Void) -> Void) {
-        self.block = block
-    }
-
-    override func start() {
-        willChangeValue(forKey: "isExecuting")
-        _isExecuting = true
-        didChangeValue(forKey: "isExecuting")
-
-        block { [weak self] in
-            guard let self = self else { return }
-            self.willChangeValue(forKey: "isExecuting")
-            self.willChangeValue(forKey: "isFinished")
-            self._isExecuting = false
-            self._isFinished = true
-            self.didChangeValue(forKey: "isExecuting")
-            self.didChangeValue(forKey: "isFinished")
-        }
     }
 }

@@ -1,7 +1,7 @@
 import Foundation
 
 /// Service for calling the NVIDIA NIM OpenAI-compatible chat completions API.
-final class NIMService {
+final class NIMService: @unchecked Sendable {
 
     static let shared = NIMService()
 
@@ -13,7 +13,6 @@ final class NIMService {
     }()
 
     private let decoder = JSONDecoder()
-    private let isoFormatter = ISO8601DateFormatter()
 
     // MARK: - Stress Analysis
 

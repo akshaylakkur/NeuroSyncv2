@@ -189,7 +189,7 @@ struct MessageDetailView: View {
                         metadataRow("Channel", message.channel.capitalized)
                         metadataRow("Sentiment", message.sentimentLabel.capitalized)
                         metadataRow("Timestamp", message.formattedTime)
-                        metadataRow("Message ID", message.id.prefix(16).debugDescription)
+                        metadataRow("Message ID", String(message.id.prefix(16)))
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()

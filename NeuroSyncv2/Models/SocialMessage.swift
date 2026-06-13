@@ -26,7 +26,6 @@ struct SocialMessage: Codable, Identifiable, Equatable {
             rel.unitsStyle = .abbreviated
             return rel.localizedString(for: date, relativeTo: Date())
         }
-        // Try without fractional seconds
         formatter.formatOptions = [.withInternetDateTime]
         if let date = formatter.date(from: timestamp) {
             let rel = RelativeDateTimeFormatter()
@@ -60,7 +59,8 @@ struct SocialMessage: Codable, Identifiable, Equatable {
         }
     }
 
-    var sentimentColor: String {
+    /// Color identifier string for use in view-level color mapping.
+    var sentimentColorName: String {
         switch sentimentLabel.lowercased() {
         case "positive": return "green"
         case "negative": return "red"
@@ -105,7 +105,8 @@ struct SentimentSummary: Codable, Identifiable {
         case generatedAt = "generated_at"
     }
 
-    var stressColor: String {
+    /// Color identifier string for use in view-level color mapping.
+    var stressColorName: String {
         switch overallStressLevel.lowercased() {
         case "critical", "high": return "red"
         case "moderate": return "orange"

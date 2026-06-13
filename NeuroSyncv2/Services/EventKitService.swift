@@ -2,7 +2,7 @@ import Foundation
 import EventKit
 
 /// Service for creating reminders in the Reminders app via EventKit.
-final class EventKitService {
+final class EventKitService: @unchecked Sendable {
 
     static let shared = EventKitService()
 
@@ -11,7 +11,6 @@ final class EventKitService {
     // MARK: - Authorization
 
     /// Requests write access to reminders.
-    @available(iOS 17.0, *)
     func requestRemindersAccess() async throws -> Bool {
         if #available(iOS 17.0, *) {
             return try await eventStore.requestFullAccessToReminders()
@@ -31,56 +30,16 @@ final class EventKitService {
     /// - Parameter suggestion: The LLM-generated suggestion to include as notes.
     /// - Returns: True if the reminder was created successfully.
     func createStressReminder(suggestion: String) async throws -> Bool {
-        let status = authorizationStatus
-        switch status {
-        case .notDetermined:
-            _ = try await requestRemindersAccess()
-        case .denied, .restricted:
-            throw EventKitError.accessDenied
-        case .authorized:
-            break
-        @unknown default:
-            throw EventKitError.accessDenied
-        }
-
-        guard let calendar = eventStore.defaultCalendarForNewReminders() else {
-            throw EventKitError.noDefaultCalendar
-        }
-
-        let reminder = EKReminder(eventStore: eventStore)
-        reminder.title = "🧘 NeuroSync: Time to de-stress"
-        reminder.notes = suggestion
-        reminder.calendar = calendar
-        reminder.isCompleted = false
-
-        // Due in 15 minutes
-        let dueDate = Date().addingTimeInterval(15 * 60)
-        reminder.dueDateComponents = Calendar.current.dateComponents(
-            [.year, .month, .day, .hour, .minute],
-            from: dueDate
+        try await createReminder(
+            title: "🧘 NeuroSync: Time to de-stress",
+            notes: suggestion,
+            dueMinutesFromNow: 15
         )
-
-        // Add an alarm 5 minutes before due
-        let alarm = EKAlarm(absoluteDate: dueDate.addingTimeInterval(-5 * 60))
-        reminder.addAlarm(alarm)
-
-        try eventStore.save(reminder, commit: true)
-        return true
     }
 
     /// Generic reminder creation with custom title and notes.
     func createReminder(title: String, notes: String, dueMinutesFromNow: Int = 15) async throws -> Bool {
-        let status = authorizationStatus
-        switch status {
-        case .notDetermined:
-            _ = try await requestRemindersAccess()
-        case .denied, .restricted:
-            throw EventKitError.accessDenied
-        case .authorized:
-            break
-        @unknown default:
-            throw EventKitError.accessDenied
-        }
+        try await ensureAuthorized()
 
         guard let calendar = eventStore.defaultCalendarForNewReminders() else {
             throw EventKitError.noDefaultCalendar
@@ -88,9 +47,13 @@ final class EventKitService {
 
         let reminder = EKReminder(eventStore: eventStore)
         reminder.title = title
-        reminder.notes = notes
         reminder.calendar = calendar
         reminder.isCompleted = false
+
+        // Add notes if non-empty
+        if !notes.isEmpty {
+            reminder.notes = notes
+        }
 
         let dueDate = Date().addingTimeInterval(TimeInterval(dueMinutesFromNow * 60))
         reminder.dueDateComponents = Calendar.current.dateComponents(
@@ -103,6 +66,22 @@ final class EventKitService {
 
         try eventStore.save(reminder, commit: true)
         return true
+    }
+
+    // MARK: - Private
+
+    private func ensureAuthorized() async throws {
+        let status = authorizationStatus
+        switch status {
+        case .notDetermined:
+            _ = try await requestRemindersAccess()
+        case .denied, .restricted:
+            throw EventKitError.accessDenied
+        case .authorized:
+            break
+        @unknown default:
+            throw EventKitError.accessDenied
+        }
     }
 }
 
