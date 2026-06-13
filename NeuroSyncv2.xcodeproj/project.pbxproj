@@ -1,0 +1,583 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXContainerItemProxy section */
+		EBEAA81B2FDDEB9C005F1F9A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EBEAA8052FDDEB9B005F1F9A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EBEAA80C2FDDEB9B005F1F9A;
+			remoteInfo = NeuroSyncv2;
+		};
+		EBEAA8252FDDEB9C005F1F9A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EBEAA8052FDDEB9B005F1F9A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EBEAA80C2FDDEB9B005F1F9A;
+			remoteInfo = NeuroSyncv2;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		EBEAA80D2FDDEB9B005F1F9A /* NeuroSyncv2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NeuroSyncv2.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		EBEAA81A2FDDEB9C005F1F9A /* NeuroSyncv2Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NeuroSyncv2Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		EBEAA8242FDDEB9C005F1F9A /* NeuroSyncv2UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NeuroSyncv2UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		EBEAA80F2FDDEB9B005F1F9A /* NeuroSyncv2 */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = NeuroSyncv2;
+			sourceTree = "<group>";
+		};
+		EBEAA81D2FDDEB9C005F1F9A /* NeuroSyncv2Tests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = NeuroSyncv2Tests;
+			sourceTree = "<group>";
+		};
+		EBEAA8272FDDEB9C005F1F9A /* NeuroSyncv2UITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = NeuroSyncv2UITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		EBEAA80A2FDDEB9B005F1F9A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EBEAA8172FDDEB9C005F1F9A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EBEAA8212FDDEB9C005F1F9A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		EBEAA8042FDDEB9B005F1F9A = {
+			isa = PBXGroup;
+			children = (
+				EBEAA80F2FDDEB9B005F1F9A /* NeuroSyncv2 */,
+				EBEAA81D2FDDEB9C005F1F9A /* NeuroSyncv2Tests */,
+				EBEAA8272FDDEB9C005F1F9A /* NeuroSyncv2UITests */,
+				EBEAA80E2FDDEB9B005F1F9A /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		EBEAA80E2FDDEB9B005F1F9A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				EBEAA80D2FDDEB9B005F1F9A /* NeuroSyncv2.app */,
+				EBEAA81A2FDDEB9C005F1F9A /* NeuroSyncv2Tests.xctest */,
+				EBEAA8242FDDEB9C005F1F9A /* NeuroSyncv2UITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		EBEAA80C2FDDEB9B005F1F9A /* NeuroSyncv2 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EBEAA82E2FDDEB9C005F1F9A /* Build configuration list for PBXNativeTarget "NeuroSyncv2" */;
+			buildPhases = (
+				EBEAA8092FDDEB9B005F1F9A /* Sources */,
+				EBEAA80A2FDDEB9B005F1F9A /* Frameworks */,
+				EBEAA80B2FDDEB9B005F1F9A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				EBEAA80F2FDDEB9B005F1F9A /* NeuroSyncv2 */,
+			);
+			name = NeuroSyncv2;
+			packageProductDependencies = (
+			);
+			productName = NeuroSyncv2;
+			productReference = EBEAA80D2FDDEB9B005F1F9A /* NeuroSyncv2.app */;
+			productType = "com.apple.product-type.application";
+		};
+		EBEAA8192FDDEB9C005F1F9A /* NeuroSyncv2Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EBEAA8312FDDEB9C005F1F9A /* Build configuration list for PBXNativeTarget "NeuroSyncv2Tests" */;
+			buildPhases = (
+				EBEAA8162FDDEB9C005F1F9A /* Sources */,
+				EBEAA8172FDDEB9C005F1F9A /* Frameworks */,
+				EBEAA8182FDDEB9C005F1F9A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				EBEAA81C2FDDEB9C005F1F9A /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				EBEAA81D2FDDEB9C005F1F9A /* NeuroSyncv2Tests */,
+			);
+			name = NeuroSyncv2Tests;
+			packageProductDependencies = (
+			);
+			productName = NeuroSyncv2Tests;
+			productReference = EBEAA81A2FDDEB9C005F1F9A /* NeuroSyncv2Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		EBEAA8232FDDEB9C005F1F9A /* NeuroSyncv2UITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EBEAA8342FDDEB9C005F1F9A /* Build configuration list for PBXNativeTarget "NeuroSyncv2UITests" */;
+			buildPhases = (
+				EBEAA8202FDDEB9C005F1F9A /* Sources */,
+				EBEAA8212FDDEB9C005F1F9A /* Frameworks */,
+				EBEAA8222FDDEB9C005F1F9A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				EBEAA8262FDDEB9C005F1F9A /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				EBEAA8272FDDEB9C005F1F9A /* NeuroSyncv2UITests */,
+			);
+			name = NeuroSyncv2UITests;
+			packageProductDependencies = (
+			);
+			productName = NeuroSyncv2UITests;
+			productReference = EBEAA8242FDDEB9C005F1F9A /* NeuroSyncv2UITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		EBEAA8052FDDEB9B005F1F9A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2640;
+				LastUpgradeCheck = 2640;
+				TargetAttributes = {
+					EBEAA80C2FDDEB9B005F1F9A = {
+						CreatedOnToolsVersion = 26.4;
+					};
+					EBEAA8192FDDEB9C005F1F9A = {
+						CreatedOnToolsVersion = 26.4;
+						TestTargetID = EBEAA80C2FDDEB9B005F1F9A;
+					};
+					EBEAA8232FDDEB9C005F1F9A = {
+						CreatedOnToolsVersion = 26.4;
+						TestTargetID = EBEAA80C2FDDEB9B005F1F9A;
+					};
+				};
+			};
+			buildConfigurationList = EBEAA8082FDDEB9B005F1F9A /* Build configuration list for PBXProject "NeuroSyncv2" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = EBEAA8042FDDEB9B005F1F9A;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = EBEAA80E2FDDEB9B005F1F9A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				EBEAA80C2FDDEB9B005F1F9A /* NeuroSyncv2 */,
+				EBEAA8192FDDEB9C005F1F9A /* NeuroSyncv2Tests */,
+				EBEAA8232FDDEB9C005F1F9A /* NeuroSyncv2UITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		EBEAA80B2FDDEB9B005F1F9A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EBEAA8182FDDEB9C005F1F9A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EBEAA8222FDDEB9C005F1F9A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		EBEAA8092FDDEB9B005F1F9A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EBEAA8162FDDEB9C005F1F9A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EBEAA8202FDDEB9C005F1F9A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		EBEAA81C2FDDEB9C005F1F9A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EBEAA80C2FDDEB9B005F1F9A /* NeuroSyncv2 */;
+			targetProxy = EBEAA81B2FDDEB9C005F1F9A /* PBXContainerItemProxy */;
+		};
+		EBEAA8262FDDEB9C005F1F9A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EBEAA80C2FDDEB9B005F1F9A /* NeuroSyncv2 */;
+			targetProxy = EBEAA8252FDDEB9C005F1F9A /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		EBEAA82C2FDDEB9C005F1F9A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = DMUCQZ5KQ9;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		EBEAA82D2FDDEB9C005F1F9A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = DMUCQZ5KQ9;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		EBEAA82F2FDDEB9C005F1F9A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = DMUCQZ5KQ9;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.akshaylakkur.NeuroSyncv2;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		EBEAA8302FDDEB9C005F1F9A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = DMUCQZ5KQ9;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.akshaylakkur.NeuroSyncv2;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		EBEAA8322FDDEB9C005F1F9A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = DMUCQZ5KQ9;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.akshaylakkur.NeuroSyncv2Tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NeuroSyncv2.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/NeuroSyncv2";
+			};
+			name = Debug;
+		};
+		EBEAA8332FDDEB9C005F1F9A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = DMUCQZ5KQ9;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.akshaylakkur.NeuroSyncv2Tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NeuroSyncv2.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/NeuroSyncv2";
+			};
+			name = Release;
+		};
+		EBEAA8352FDDEB9C005F1F9A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = DMUCQZ5KQ9;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.akshaylakkur.NeuroSyncv2UITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = NeuroSyncv2;
+			};
+			name = Debug;
+		};
+		EBEAA8362FDDEB9C005F1F9A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = DMUCQZ5KQ9;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.akshaylakkur.NeuroSyncv2UITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = NeuroSyncv2;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		EBEAA8082FDDEB9B005F1F9A /* Build configuration list for PBXProject "NeuroSyncv2" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EBEAA82C2FDDEB9C005F1F9A /* Debug */,
+				EBEAA82D2FDDEB9C005F1F9A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EBEAA82E2FDDEB9C005F1F9A /* Build configuration list for PBXNativeTarget "NeuroSyncv2" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EBEAA82F2FDDEB9C005F1F9A /* Debug */,
+				EBEAA8302FDDEB9C005F1F9A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EBEAA8312FDDEB9C005F1F9A /* Build configuration list for PBXNativeTarget "NeuroSyncv2Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EBEAA8322FDDEB9C005F1F9A /* Debug */,
+				EBEAA8332FDDEB9C005F1F9A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EBEAA8342FDDEB9C005F1F9A /* Build configuration list for PBXNativeTarget "NeuroSyncv2UITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EBEAA8352FDDEB9C005F1F9A /* Debug */,
+				EBEAA8362FDDEB9C005F1F9A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = EBEAA8052FDDEB9B005F1F9A /* Project object */;
+}
