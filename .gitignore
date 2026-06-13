@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+*.so
+
+# Environments
+.env
+.venv
+venv/
+env/
+
+# IDE
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Xcode
+*.xcworkspace/
+xcuserdata/
+DerivedData/
+*.pbxproj.bak
+*.pbxproj.bak2
+
+# OpenClaw
+.openclaw/
+
+# Data / logs (keep structure, ignore generated files)
+server/data/
+*.log
+message_log.jsonl
+stress_summary.json
+latest_summary.json
+
+# OS
+.DS_Store
+Thumbs.db

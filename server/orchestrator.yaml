@@ -1,0 +1,40 @@
+# NeuroSync Orchestrator Configuration
+# Uses: openclaw channels add --channel discord --token YOUR_TOKEN
+# Uses: openclaw channels add --channel gmail --token YOUR_GMAIL_TOKEN
+
+gateway:
+  ws_url: "ws://127.0.0.1:18789"
+  api_key: ""  # Set via OPENCLAW_GATEWAY_TOKEN env var
+  mode: local
+  retry_attempts: 3
+
+discord:
+  enabled: true
+  max_messages_per_poll: 50
+  guild_id: null            # Set to restrict to a specific guild
+
+email:
+  enabled: true
+  query_filter: "is:unread" # Gmail search syntax
+  max_results: 20
+
+llm:
+  model: "openai/gpt-4o-mini"
+  temperature: 0.2
+  max_tokens: 2048
+  enable_sentiment: true
+  enable_urgency_detection: true
+  enable_topic_classification: true
+  enable_crisis_detection: true
+  enable_volume_anomaly: true
+
+storage:
+  output_dir: "./data"           # Where logs + summaries are written
+  save_raw_messages: true
+  save_summaries: true
+  max_history_messages: 10000
+  summary_file: "stress_summary.json"
+  raw_log_file: "message_log.jsonl"
+
+global_poll_interval: 15.0       # Core 15-second cadence
+debug: false

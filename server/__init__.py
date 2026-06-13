@@ -1,0 +1,1 @@
+# NeuroSync Bridge — connects iOS app ↔ OpenClaw ↔ NVIDIA NIM
