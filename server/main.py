@@ -17,6 +17,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from orchestrator import Orchestrator, OrchestratorConfig
+from orchestrator import social_api
 
 logger = logging.getLogger("neurosync.api")
 
@@ -273,3 +274,15 @@ async def summary_text():
         lines.append(f"Summary: {latest['summary']}")
 
     return {"text": "\n".join(lines)}
+
+
+# ======================================================================
+# Register Social Sentiment Routes
+# ======================================================================
+
+def _get_orchestrator():
+    """Helper for social_api to access orchestrator state."""
+    return state.orchestrator
+
+
+social_api.register_social_routes(app, _get_orchestrator)

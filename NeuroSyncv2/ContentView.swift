@@ -8,11 +8,18 @@
 import SwiftUI
 
 struct ContentView: View {
+    @EnvironmentObject var dashboardVM: DashboardViewModel
+
     var body: some View {
         TabView {
             DashboardView()
                 .tabItem {
                     Label("Dashboard", systemImage: "house.fill")
+                }
+
+            SocialSentimentView()
+                .tabItem {
+                    Label("Sentiment", systemImage: "brain.head.profile")
                 }
 
             StressHistoryView()

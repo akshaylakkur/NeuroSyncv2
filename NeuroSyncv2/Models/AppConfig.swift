@@ -5,9 +5,13 @@ enum AppConfig {
     static let nvidiaBaseURL = "https://integrate.api.nvidia.com/v1"
     static let nvidiaModel = "nvidia/nemotron-3-ultra-550b-a55b"
 
+    // NeuroSync Server API
+    static let serverBaseURL = "http://localhost:8080"
+
     // Timings
     static let healthFetchInterval: TimeInterval = 300 // 5 min
     static let bgTaskMinimumInterval: TimeInterval = 30 * 60 // 30 min
+    static let socialPollInterval: TimeInterval = 30 // 30 seconds
 
     // Identifiers
     static let bgTaskIdentifier = "com.akshaylakkur.NeuroSyncv2.stressCheck"

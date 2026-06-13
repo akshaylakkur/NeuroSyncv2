@@ -67,6 +67,43 @@ final class EventKitService {
         try eventStore.save(reminder, commit: true)
         return true
     }
+
+    /// Generic reminder creation with custom title and notes.
+    func createReminder(title: String, notes: String, dueMinutesFromNow: Int = 15) async throws -> Bool {
+        let status = authorizationStatus
+        switch status {
+        case .notDetermined:
+            _ = try await requestRemindersAccess()
+        case .denied, .restricted:
+            throw EventKitError.accessDenied
+        case .authorized:
+            break
+        @unknown default:
+            throw EventKitError.accessDenied
+        }
+
+        guard let calendar = eventStore.defaultCalendarForNewReminders() else {
+            throw EventKitError.noDefaultCalendar
+        }
+
+        let reminder = EKReminder(eventStore: eventStore)
+        reminder.title = title
+        reminder.notes = notes
+        reminder.calendar = calendar
+        reminder.isCompleted = false
+
+        let dueDate = Date().addingTimeInterval(TimeInterval(dueMinutesFromNow * 60))
+        reminder.dueDateComponents = Calendar.current.dateComponents(
+            [.year, .month, .day, .hour, .minute],
+            from: dueDate
+        )
+
+        let alarm = EKAlarm(absoluteDate: dueDate.addingTimeInterval(-5 * 60))
+        reminder.addAlarm(alarm)
+
+        try eventStore.save(reminder, commit: true)
+        return true
+    }
 }
 
 // MARK: - Errors
