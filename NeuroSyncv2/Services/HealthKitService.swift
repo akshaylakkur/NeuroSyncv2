@@ -46,13 +46,13 @@ final class HealthKitService: @unchecked Sendable {
     // MARK: - Fetch Metrics
 
     func fetchLatestMetrics() async -> HealthMetrics {
-        async let hr = try? latestHeartRate()
-        async let hrv = try? latestHRV()
-        async let sleep = try? lastNightSleepHours()
-        async let steps = try? todaySteps()
-        async let exercise = try? todayExerciseMinutes()
-        async let mindful = try? todayMindfulMinutes()
-        async let respRate = try? latestRespiratoryRate()
+        async let hr = latestHeartRate()
+        async let hrv = latestHRV()
+        async let sleep = lastNightSleepHours()
+        async let steps = todaySteps()
+        async let exercise = todayExerciseMinutes()
+        async let mindful = todayMindfulMinutes()
+        async let respRate = latestRespiratoryRate()
 
         return await HealthMetrics(
             heartRate: hr,

@@ -42,21 +42,37 @@ final class BackgroundTaskService {
         // Reschedule the next check
         scheduleBackgroundCheck()
 
+        // Ensure setTaskCompleted is called exactly once, even if expiration fires.
+        let completionLock = NSLock()
+        var didComplete = false
+
+        func markCompleted(success: Bool) {
+            completionLock.lock()
+            defer { completionLock.unlock() }
+            guard !didComplete else { return }
+            didComplete = true
+            task.setTaskCompleted(success: success)
+        }
+
         task.expirationHandler = {
-            // Nothing to cancel — the Task handles cancellation via Task.isCancelled
+            markCompleted(success: false)
         }
 
         // Run on MainActor since we interact with MainActor-isolated services
         Task { @MainActor in
-            defer { task.setTaskCompleted(success: true) }
-
-            guard !Task.isCancelled else { return }
+            guard !Task.isCancelled else {
+                markCompleted(success: false)
+                return
+            }
 
             do {
                 let metrics = await healthKitService.fetchLatestMetrics()
 
                 let apiKey = KeychainHelper.load(key: AppConfig.apiKeyAccount)
-                guard let key = apiKey, !key.isEmpty else { return }
+                guard let key = apiKey, !key.isEmpty else {
+                    markCompleted(success: true)
+                    return
+                }
 
                 let result = try await nimService.analyzeStress(metrics: metrics, apiKey: key)
 
@@ -74,8 +90,9 @@ final class BackgroundTaskService {
                 var events = Self.loadEvents()
                 events.insert(event, at: 0)
                 Self.saveEvents(events)
+                markCompleted(success: true)
             } catch {
-                task.setTaskCompleted(success: false)
+                markCompleted(success: false)
             }
         }
     }

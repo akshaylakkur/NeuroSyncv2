@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 /// Service that communicates with the NeuroSync server's social sentiment API endpoints.
 @MainActor

@@ -6,7 +6,8 @@ enum AppConfig {
     static let nvidiaModel = "nvidia/nemotron-3-ultra-550b-a55b"
 
     // NeuroSync Server API
-    static let serverBaseURL = "http://localhost:8080"
+    // Use the Mac's local IP so the iPhone can reach it during development.
+    static let serverBaseURL = "http://172.18.92.67:8080"
 
     // Timings
     static let healthFetchInterval: TimeInterval = 300 // 5 min

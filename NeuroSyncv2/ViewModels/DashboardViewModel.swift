@@ -63,7 +63,7 @@ final class DashboardViewModel: ObservableObject {
             // EventKit
             do {
                 _ = try await eventKitService.requestRemindersAccess()
-                remindersAuthorized = eventKitService.authorizationStatus == .authorized
+                remindersAuthorized = eventKitService.isAuthorized
             } catch {
                 // Not critical — reminders will fail gracefully later
                 remindersAuthorized = false

@@ -24,6 +24,16 @@ final class EventKitService: @unchecked Sendable {
         EKEventStore.authorizationStatus(for: .reminder)
     }
 
+    /// Returns true if the user has authorized reminders access (including iOS 17+ full/write access).
+    var isAuthorized: Bool {
+        switch authorizationStatus {
+        case .authorized, .fullAccess, .writeOnly:
+            return true
+        default:
+            return false
+        }
+    }
+
     // MARK: - Create Reminder
 
     /// Creates a stress management reminder in the default reminders list.
@@ -77,7 +87,7 @@ final class EventKitService: @unchecked Sendable {
             _ = try await requestRemindersAccess()
         case .denied, .restricted:
             throw EventKitError.accessDenied
-        case .authorized:
+        case .authorized, .fullAccess, .writeOnly:
             break
         @unknown default:
             throw EventKitError.accessDenied

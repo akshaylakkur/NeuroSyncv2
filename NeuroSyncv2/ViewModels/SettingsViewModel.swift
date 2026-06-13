@@ -34,7 +34,7 @@ final class SettingsViewModel: ObservableObject {
 
         // EventKit status
         switch eventKitService.authorizationStatus {
-        case .authorized:
+        case .authorized, .fullAccess, .writeOnly:
             remindersPermissionStatus = "Authorized"
         case .denied:
             remindersPermissionStatus = "Denied"

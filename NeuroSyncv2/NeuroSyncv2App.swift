@@ -10,13 +10,11 @@ import SwiftUI
 @main
 struct NeuroSyncv2App: App {
     @StateObject private var dashboardVM = DashboardViewModel()
-    @StateObject private var socialVM = SocialSentimentViewModel()
 
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environmentObject(dashboardVM)
-                .environmentObject(socialVM)
                 .onAppear {
                     // Pre-seed NVIDIA API key if not already stored
                     if KeychainHelper.load(key: AppConfig.apiKeyAccount) == nil {
