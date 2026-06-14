@@ -78,12 +78,27 @@ final class BackgroundTaskService {
 
                 var event = StressEvent(metrics: metrics, result: result)
 
-                if result.stressLevel == .high {
+                if result.stressLevel == .high || result.stressLevel == .critical {
                     do {
                         let created = try await eventKitService.createStressReminder(suggestion: result.suggestion)
                         event.reminderCreated = created
                     } catch {
                         event.reminderCreated = false
+                    }
+
+                    // Generate an exercise plan and persist it for the next app open
+                    do {
+                        let plan = try await nimService.generateExercise(
+                            metrics: metrics,
+                            stressResult: result,
+                            apiKey: key
+                        )
+                        if let data = try? JSONEncoder().encode(plan) {
+                            UserDefaults.standard.set(data, forKey: AppConfig.lastExercisePlanKey)
+                        }
+                    } catch {
+                        // Silently skip — user still gets the reminder
+                        print("Background exercise generation failed: \(error.localizedDescription)")
                     }
                 }
 

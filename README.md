@@ -6,7 +6,7 @@
 
 ## 📱 What it does
 
-NeuroSync is split into two major layers that work together:
+NeuroSync is split into **four** major layers that work together:
 
 ### 1. Physiological Stress Monitoring (iOS + HealthKit)
 
@@ -37,7 +37,77 @@ The backend server runs an **OpenClaw orchestrator** that polls **Discord** and 
 
 The iOS app polls this server and displays a real-time social sentiment dashboard alongside your health data. If the server detects a social crisis, the app creates a reminder and correlates social stress with physiological stress (`Health: high / Social: critical`).
 
-### 3. Simulation & Demo Mode
+### 3. AI-Powered Breathing Exercises with 🎙️ Siri Integration {#siri-integration}
+
+When NeuroSync detects moderate or high stress (from either health data or social sentiment), it doesn't just warn you — it **actively intervenes** with a personalized, LLM-generated guided breathing exercise. Here's how it works:
+
+#### Voice-Guided Breathing (LLM-Generated)
+
+The **NVIDIA NIM** API generates a custom `StressExercisePlan` with:
+- **Personalized timing** — inhale/hold/exhale ratios tuned to your current heart rate and HRV
+- **Thematic instructions** — wave visualizations for social stress, mountain grounding for health stress
+- **Voice prompts** for each phase, spoken aloud by the built-in **VoiceGuidanceService** (AVSpeechSynthesizer)
+
+Each plan includes:
+- `name` — e.g., "Ocean Breaths" or "The Wave Reset"
+- `phases` — an array of `inhale` / `hold` / `exhale` / `rest` phases with per-phase durations, written instructions, and voice prompts
+- `spokenSummary` — a natural-language description Siri reads aloud (e.g., *"Your heart rate is elevated at 92. I've designed a 3-minute exercise called 'Ocean Breaths' for you."*)
+
+**Fallback plan:** If the LLM is unavailable (no API key, network failure), the app falls back to a hardcoded **4-7-8 breathing plan** — so the exercise always works.
+
+#### The Full-Screen Breathing Experience
+
+The **`BreathingExerciseView`** provides a full-screen, distraction-free environment:
+
+| Element | Description |
+|---------|-------------|
+| **Animated breathing circle** | Expands on inhale, contracts on exhale — smooth, color-shifting transitions |
+| **Phase instructions** | Large text showing what to do ("Breathe in slowly through your nose") |
+| **Countdown timer** | Large numeric display of seconds remaining in each phase |
+| **Progress bar** | Shows overall exercise progress (e.g., "23s / 120s") |
+| **Pause / Resume / Skip** | Full state machine: `idle → active → paused → completed` |
+| **Auto-dismiss** | On completion, shows a checkmark + "Great job!" and auto-closes after 3 seconds |
+
+#### 🎙️ Siri Integration (iOS 17+ App Intents)
+
+NeuroSync registers **App Shortcuts** via the `AppShortcutsProvider` protocol, allowing users to trigger guided breathing exercises **hands-free** with Siri. The following phrases are automatically registered when the app is installed:
+
+| Phrase | Action |
+|--------|--------|
+| *"Hey Siri, start a NeuroSync stress exercise"* | Opens app & begins breathing exercise |
+| *"Hey Siri, start a breathing exercise with NeuroSync"* | Opens app & begins breathing exercise |
+| *"Hey Siri, begin a stress relief exercise on NeuroSync"* | Opens app & begins breathing exercise |
+| *"Hey Siri, help me de-stress with NeuroSync"* | Opens app & begins breathing exercise |
+| *"Hey Siri, do a breathing exercise with NeuroSync"* | Opens app & begins breathing exercise |
+
+**How the Siri flow works:**
+1. Siri voice command triggers `StressExerciseIntent` (an `AppIntent` with `openAppWhenRun = true`)
+2. The **Intent itself** runs the full HealthKit → NIM pipeline inside the app's own process:
+   - Fetches live health metrics via `HealthKitService`
+   - Sends them to NVIDIA NIM for stress analysis + exercise generation
+   - If the LLM generates a plan, it's encoded to JSON and saved to `UserDefaults` under `last_exercise_plan`
+   - If health data is unavailable or stress is low, the fallback **4-7-8 breathing plan** is persisted instead
+3. The Intent returns a dialog response (e.g., *"I've created a personalized exercise for you"*) and the app opens
+4. The **App entry point** (`NeuroSyncv2App.swift`) detects the persisted plan via `checkForPendingExercise()` — called on `onAppear` **and** every time `UIApplication.didBecomeActiveNotification` fires (covering cold launch, foreground-from-background, and Siri dismissal)
+5. `checkForPendingExercise()` reads the plan from `UserDefaults`, clears it, and sets `dashboardVM.showExerciseSheet = true`
+6. The `BreathingExerciseView` opens as a full-screen cover with voice guidance
+
+#### Background Task Integration
+
+The **background task** (`BGTaskScheduler`) also generates exercise plans autonomously:
+1. In the background, the system fetches metrics and runs stress analysis via NIM
+2. If stress is **high**, it generates an exercise plan and saves it to `UserDefaults` (`last_exercise_plan`)
+3. When the user opens the app, `checkForPendingExercise()` detects the pre-generated plan and presents it immediately — **no loading, no waiting**
+
+#### VoiceGuidanceService
+
+The **`VoiceGuidanceService`** wraps `AVSpeechSynthesizer` with a calming voice configuration:
+- **Speech rate:** 0.45 (slower than default for calmness)
+- **Pitch multiplier:** 1.1 (slightly warmer tone)
+- **Audio session:** `.playback` mode with `.spokenAudio` and `.duckOthers` — plays even when the device is in silent mode
+- **Pause / Resume / Stop** — full voice lifecycle management tied to the exercise state machine
+
+### 4. Simulation & Demo Mode
 
 Because not everyone has a Discord bot token and a Gmail OAuth setup handy, NeuroSync includes a **standalone simulator server** that generates 1000+ realistic messages across multiple **stress scenarios**:
 - 🟢 **normal_day** — moderate traffic, occasional spikes
@@ -65,6 +135,9 @@ You can switch scenarios live via API to demo different stress patterns.
 | Secure Storage | iOS Keychain (API key storage) |
 | Background Tasks | `BGTaskScheduler` for periodic stress checks |
 | Auto-refresh | Task-based polling loop (5 min health, 30s social) |
+| **Siri Integration** | **`AppIntents` framework — `AppShortcutsProvider`, `AppIntent` with `openAppWhenRun`** |
+| **Voice Guidance** | **`AVSpeechSynthesizer` + `AVAudioSession` (plays in silent mode)** |
+| **Breathing Exercise Engine** | **State machine (`StressExerciseManager`) with timer-driven phase transitions** |
 
 The iOS app has four tabs:
 1. **Dashboard** — stress indicator ring, AI insights card, live health metrics grid
@@ -178,6 +251,9 @@ The iOS app has four tabs:
 - **The stress indicator ring animation** — a custom SwiftUI circular gauge that smoothly animates between green/yellow/orange/red based on the LLM's analysis. It's the kind of polish that makes a demo memorable.
 - **Automatic Reminders integration** — when stress is detected (either physiologically or socially), NeuroSync doesn't just show you a notification; it creates a proper iOS Reminder with the AI's suggestion, complete with an alarm. This means you actually get pinged to take action.
 - **Automatic re-pooling in the simulator** — when the message pool runs out, it regenerates 1000 new messages seamlessly, so the demo never runs dry.
+- **🎙️ Siri-powered breathing exercises** — "Hey Siri, start a NeuroSync stress exercise" triggers the full HealthKit → NVIDIA NIM → voice-guided breathing pipeline. The exercise plan is personalized to the user's current physiological state, with voice prompts spoken aloud even when the phone is in silent mode.
+- **LLM-generated exercise personalization** — The NVIDIA API doesn't just analyze stress; it generates a custom `StressExercisePlan` with phase timings, thematic instructions, and spoken summaries tailored to the user's heart rate, HRV, and stress trigger source.
+- **Background pre-generation** — The background task generates exercise plans before the user opens the app, so there's zero loading time. The exercise is ready and waiting.
 
 ---
 
@@ -269,14 +345,20 @@ curl -X POST "http://localhost:8081/sim/scenario?scenario=incident_escalation"
 ```
 NeuroSyncv2/
 ├── NeuroSyncv2/                  # iOS App
-│   ├── NeuroSyncv2App.swift      # App entry point
-│   ├── ContentView.swift         # Tab navigation
+│   ├── NeuroSyncv2App.swift      # App entry point + Siri & background task exercise plan detection
+│   ├── ContentView.swift         # Tab navigation & root view
 │   ├── Models/
 │   │   ├── HealthMetrics.swift   # Health data model
 │   │   ├── StressResult.swift    # LLM analysis result
 │   │   ├── StressEvent.swift     # Stored stress check
+│   │   ├── StressExercise.swift  # Exercise plan & phase models
 │   │   ├── SocialMessage.swift   # Social message model
 │   │   └── AppConfig.swift       # Global configuration
+│   ├── Intents/                   # 🎙️ Siri / App Intents
+│   │   ├── NeuroSyncShortcuts.swift  # AppShortcutsProvider (5 Siri phrases)
+│   │   └── StressExerciseIntent.swift # AppIntent (openAppWhenRun)
+│   ├── Managers/                  # 🧘 Exercise engine
+│   │   └── StressExerciseManager.swift  # State machine + timer + voice orchestration
 │   ├── ViewModels/
 │   │   ├── DashboardViewModel.swift
 │   │   ├── SocialSentimentViewModel.swift
@@ -284,8 +366,9 @@ NeuroSyncv2/
 │   │   └── SettingsViewModel.swift
 │   ├── Views/
 │   │   ├── DashboardView.swift
-│   │   ├── StressIndicatorView.swift    # Custom ring gauge
-│   │   ├── LlmSuggestionView.swift      # AI insights card
+│   │   ├── BreathingExerciseView.swift   # Full-screen animated breathing UI
+│   │   ├── StressIndicatorView.swift     # Custom ring gauge
+│   │   ├── LlmSuggestionView.swift       # AI insights card
 │   │   ├── MetricCardView.swift
 │   │   ├── SocialSentimentView.swift
 │   │   ├── MessageRowView.swift
@@ -294,10 +377,11 @@ NeuroSyncv2/
 │   │   └── SettingsView.swift
 │   └── Services/
 │       ├── HealthKitService.swift       # Apple Health integration
-│       ├── NIMService.swift             # NVIDIA NIM API client
+│       ├── NIMService.swift             # NVIDIA NIM API client + exercise generation
 │       ├── SocialSentimentService.swift # Server API client
+│       ├── VoiceGuidanceService.swift   # AVSpeechSynthesizer (calming voice)
 │       ├── EventKitService.swift        # Reminders integration
-│       ├── BackgroundTaskService.swift  # BGTaskScheduler
+│       ├── BackgroundTaskService.swift  # BGTaskScheduler + exercise plan storage
 │       └── KeychainHelper.swift         # Secure API key storage
 ├── server/                       # Python Backend
 │   ├── main.py                   # FastAPI bridge server
@@ -329,18 +413,15 @@ NeuroSyncv2/
 | Layer | Technology |
 |-------|-----------|
 | Mobile | SwiftUI, HealthKit, EventKit, Keychain, BGTaskScheduler |
+| **🎙️ Siri / App Intents** | **`AppIntents` framework — `AppShortcutsProvider`, `AppIntent` with `openAppWhenRun`** |
+| **🗣️ Voice Guidance** | **`AVSpeechSynthesizer` + `AVAudioSession` (plays in silent mode)** |
+| **🧘 Exercise Engine** | **`Timer`-driven state machine with pause/resume/skip lifecycle** |
 | AI (Physiological) | NVIDIA NIM — Nemotron-3 Ultra 550B |
 | AI (Social) | OpenClaw + GPT-4o-mini (configurable) |
 | Backend | Python, FastAPI, asyncio, httpx |
 | Message Platform | OpenClaw SDK / Gateway |
 | Persistence | Rolling buffers, JSONL, UserDefaults |
 | Simulation | Custom scenario engine with 1000+ message pools |
-
----
-
-## 📄 License
-
-MIT — built for the NVIDIA + SendChow Techathon.
 
 ---
 

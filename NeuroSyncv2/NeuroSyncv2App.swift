@@ -29,7 +29,46 @@ struct NeuroSyncv2App: App {
                     }
                     // Request initial authorizations
                     dashboardVM.requestInitialAuthorization()
+                    // Check for a Siri-generated exercise plan on cold launch
+                    checkForPendingExercise()
                 }
+                // This fires every time the app becomes active: cold launch,
+                // foreground from background, and when Siri finishes and
+                // brings the app back to the foreground.
+                .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+                    checkForPendingExercise()
+                }
+        }
+    }
+
+    /// Checks for a pending exercise plan and presents the breathing exercise view.
+    /// Polls both the shared App Group store (Siri intent) and standard UserDefaults
+    /// (background tasks) because intent runs in a separate process.
+    private func checkForPendingExercise() {
+        Task {
+            for attempt in 0..<15 {
+                // Check App Group store (Siri intent, cross-process)
+                if let plan = readSharedPlan() {
+                    await MainActor.run {
+                        dashboardVM.generatedExercisePlan = plan
+                        dashboardVM.showExerciseSheet = true
+                    }
+                    return
+                }
+                // Check standard UserDefaults (background task, in-process)
+                if let data = UserDefaults.standard.data(forKey: AppConfig.lastExercisePlanKey),
+                   let plan = try? JSONDecoder().decode(StressExercisePlan.self, from: data) {
+                    UserDefaults.standard.removeObject(forKey: AppConfig.lastExercisePlanKey)
+                    await MainActor.run {
+                        dashboardVM.generatedExercisePlan = plan
+                        dashboardVM.showExerciseSheet = true
+                    }
+                    return
+                }
+                if attempt < 14 {
+                    try? await Task.sleep(nanoseconds: 200_000_000)
+                }
+            }
         }
     }
 }

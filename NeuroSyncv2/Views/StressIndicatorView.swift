@@ -81,6 +81,7 @@ struct StressIndicatorView: View {
         case .low: return 0.3
         case .moderate: return 0.6
         case .high: return 1.0
+        case .critical: return 1.0
         }
     }
 
@@ -90,6 +91,7 @@ struct StressIndicatorView: View {
         case .low: return .green
         case .moderate: return .orange
         case .high: return .red
+        case .critical: return Color(red: 0.5, green: 0.0, blue: 0.0) // deep dark red
         }
     }
 
@@ -99,6 +101,7 @@ struct StressIndicatorView: View {
         case .low: return "🧘"
         case .moderate: return "⚡"
         case .high: return "🔥"
+        case .critical: return "🚨"
         }
     }
 }

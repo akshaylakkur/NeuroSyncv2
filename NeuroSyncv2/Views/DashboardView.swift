@@ -156,9 +156,48 @@ struct DashboardView: View {
                     }
                     .disabled(dashboardVM.isAnalyzing)
                     .padding(.horizontal)
-                    .padding(.bottom, 20)
+
+                    // Start Breathing Exercise Button — visible only when a plan exists
+                    if let plan = dashboardVM.generatedExercisePlan {
+                        Button(action: {
+                            dashboardVM.generatedExercisePlan = plan
+                            dashboardVM.showExerciseSheet = true
+                        }) {
+                            HStack {
+                                Image(systemName: "wind")
+                                Text("Start Breathing Exercise")
+                            }
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 14)
+                            .background(
+                                LinearGradient(
+                                    colors: [.teal, .mint],
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                            )
+                            .clipShape(RoundedRectangle(cornerRadius: 14))
+                        }
+                        .padding(.horizontal)
+                    }
+
+                    Color.clear.frame(height: 0)
+                        .padding(.bottom, 20)
                 }
                 .padding(.top)
+            }
+            // Breathing Exercise Sheet — attached to the ScrollView which always exists
+            .fullScreenCover(isPresented: $dashboardVM.showExerciseSheet) {
+                if let plan = dashboardVM.generatedExercisePlan {
+                    BreathingExerciseView(
+                        plan: plan,
+                        onDismiss: {
+                            dashboardVM.showExerciseSheet = false
+                        }
+                    )
+                }
             }
             .background(Color(.systemGroupedBackground))
             .navigationTitle("NeuroSync")

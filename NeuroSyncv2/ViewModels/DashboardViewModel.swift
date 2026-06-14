@@ -20,6 +20,12 @@ final class DashboardViewModel: ObservableObject {
     @Published var remindersAuthorized = false
     @Published var lastUpdated: Date?
 
+    // MARK: - Exercise State
+
+    @Published var generatedExercisePlan: StressExercisePlan?
+    @Published var showExerciseSheet = false
+    @Published var autoLaunchExercise = true
+
     // MARK: - Services
 
     private let healthKitService = HealthKitService.shared
@@ -33,6 +39,7 @@ final class DashboardViewModel: ObservableObject {
     init() {
         loadAPIKey()
         loadEvents()
+        loadAutoLaunchSetting()
     }
 
     deinit {
@@ -118,13 +125,35 @@ final class DashboardViewModel: ObservableObject {
 
             // Save event
             var event = StressEvent(metrics: metrics, result: result)
-            // If stress is high, create a reminder
-            if result.stressLevel == .high {
+            // If stress is high or critical, create a reminder
+            if result.stressLevel == .high || result.stressLevel == .critical {
                 do {
                     event.reminderCreated = try await eventKitService.createStressReminder(suggestion: result.suggestion)
                 } catch {
                     event.reminderCreated = false
                 }
+
+                // Generate a personalized breathing exercise
+                do {
+                    let plan = try await nimService.generateExercise(
+                        metrics: metrics,
+                        stressResult: result,
+                        apiKey: nvidiaApiKey
+                    )
+                    generatedExercisePlan = plan
+                } catch {
+                    // Use the fallback plan if LLM exercise generation fails
+                    generatedExercisePlan = StressExerciseManager.fallbackPlan
+                }
+
+                // Auto-launch the exercise sheet if enabled
+                if autoLaunchExercise {
+                    showExerciseSheet = true
+                }
+            } else {
+                // Reset exercise state when stress is not high/critical
+                generatedExercisePlan = nil
+                showExerciseSheet = false
             }
             stressEvents.insert(event, at: 0)
             saveEvents()
@@ -208,5 +237,21 @@ final class DashboardViewModel: ObservableObject {
         if let key = KeychainHelper.load(key: AppConfig.apiKeyAccount) {
             nvidiaApiKey = key
         }
+    }
+
+    // MARK: - Auto-Launch Exercise
+
+    /// Enable or disable auto-launching the breathing exercise sheet when high/critical stress is detected.
+    func setAutoLaunchExercise(_ enabled: Bool) {
+        autoLaunchExercise = enabled
+        UserDefaults.standard.set(enabled, forKey: AppConfig.autoLaunchExerciseKey)
+    }
+
+    private func loadAutoLaunchSetting() {
+        // Register default so the first launch defaults to true
+        if UserDefaults.standard.object(forKey: AppConfig.autoLaunchExerciseKey) == nil {
+            UserDefaults.standard.set(true, forKey: AppConfig.autoLaunchExerciseKey)
+        }
+        autoLaunchExercise = UserDefaults.standard.bool(forKey: AppConfig.autoLaunchExerciseKey)
     }
 }

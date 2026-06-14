@@ -4,6 +4,7 @@ enum StressLevel: String, Codable, CaseIterable {
     case low
     case moderate
     case high
+    case critical
 }
 
 struct StressResult: Codable {

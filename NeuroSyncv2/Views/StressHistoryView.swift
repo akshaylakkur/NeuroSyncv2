@@ -102,6 +102,7 @@ struct StressHistoryView: View {
         case .low: return .green
         case .moderate: return .orange
         case .high: return .red
+        case .critical: return Color(red: 0.5, green: 0.0, blue: 0.0)
         }
     }
 }
@@ -191,6 +192,7 @@ struct StressEventRow: View {
         case .low: return .green
         case .moderate: return .orange
         case .high: return .red
+        case .critical: return Color(red: 0.5, green: 0.0, blue: 0.0)
         }
     }
 
@@ -199,6 +201,7 @@ struct StressEventRow: View {
         case .low: return "🧘"
         case .moderate: return "⚡"
         case .high: return "🔥"
+        case .critical: return "🚨"
         }
     }
 }
@@ -284,6 +287,7 @@ struct StressEventDetailView: View {
         case .low: return .green
         case .moderate: return .orange
         case .high: return .red
+        case .critical: return Color(red: 0.5, green: 0.0, blue: 0.0)
         }
     }
 
@@ -292,6 +296,7 @@ struct StressEventDetailView: View {
         case .low: return "🧘"
         case .moderate: return "⚡"
         case .high: return "🔥"
+        case .critical: return "🚨"
         }
     }
 }

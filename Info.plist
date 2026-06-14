@@ -32,7 +32,15 @@
     <string>NeuroSync creates reminders to help you manage stress when it detects elevated levels.</string>
     <key>NSRemindersFullAccessUsageDescription</key>
     <string>NeuroSync needs full access to Reminders to create stress management reminders when it detects elevated stress from your health data or social sentiment.</string>
-    <key>UIApplicationSceneManifest</key>
+    <key>NSSpeechRecognitionUsageDescription</key>
+	<string>NeuroSync uses speech synthesis for voice-guided breathing exercises to help you manage stress.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>NeuroSync uses the microphone for optional voice-guided breathing exercise sessions.</string>
+	<key>NSUserActivityTypes</key>
+	<array>
+		<string>com.akshaylakkur.NeuroSyncv2.startExercise</string>
+	</array>
+	<key>UIApplicationSceneManifest</key>
     <dict>
         <key>UIApplicationSupportsMultipleScenes</key>
         <false/>

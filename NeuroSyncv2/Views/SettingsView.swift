@@ -50,6 +50,18 @@ struct SettingsView: View {
                                 .foregroundColor(.secondary)
                         }
                     }
+
+                    Toggle(isOn: Binding(
+                        get: { dashboardVM.autoLaunchExercise },
+                        set: { dashboardVM.setAutoLaunchExercise($0) }
+                    )) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Auto-Start Breathing Exercise")
+                            Text("When high or critical stress is detected, automatically launch a guided breathing exercise.")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
                 } header: {
                     Label("Monitoring", systemImage: "clock.arrow.circlepath")
                 }

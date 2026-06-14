@@ -22,4 +22,6 @@ enum AppConfig {
     // UserDefaults keys
     static let stressEventsKey = "stress_events"
     static let bgRefreshEnabledKey = "bg_refresh_enabled"
+    static let autoLaunchExerciseKey = "auto_launch_exercise"
+    static let lastExercisePlanKey = "last_exercise_plan"
 }
