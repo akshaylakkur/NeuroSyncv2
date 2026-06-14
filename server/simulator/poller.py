@@ -186,23 +186,30 @@ class SimulatedPoller(BasePoller):
         if burst_size == 0:
             return []
 
-        # Pull messages from the generator (do not filter by channel here;
-        # the generator tags with 'discord'/'gmail' but we'll override to
-        # the poller's channel_name when emitting raw dicts)
-        batch = self._generator.next_batch(burst_size)
+        # Pull messages from the generator using category-weighted sampling.
+        # This is what makes scenarios actually different from each other:
+        #   - weekend_calm targets positive/neutral, avoids crisis/high_stress
+        #   - crisis_spike heavily targets crisis, some high_stress
+        #   - normal_day has a balanced mix
+        # The remaining categories (moderate_stress, low_stress, neutral) fill
+        # in naturally as leftover slots.
+        cat_weights = {
+            "crisis": pattern.crisis_chance,
+            "high_stress": pattern.high_stress_chance,
+            "positive": pattern.positive_chance,
+        }
+        batch = self._generator.next_batch_weighted(burst_size, cat_weights)
 
         # If pool exhausted, regenerate
         if len(batch) < burst_size and self._generator.remaining == 0:
             self.reset_pool(1000)
-            extra = self._generator.next_batch(burst_size - len(batch))
-            batch.extend(extra)
+            batch = self._generator.next_batch_weighted(burst_size, cat_weights)
 
         # Convert SimMessage -> raw dicts for the orchestrator
         result = []
         now = datetime.now(timezone.utc)
         for msg in batch:
-            # Give each message a fresh, realistic timestamp
-            offset = self._rng.randint(0, 14)  # within last 15s
+            offset = self._rng.randint(0, 14)
             ts = now.replace(second=offset)
             result.append({
                 "id": msg.id,

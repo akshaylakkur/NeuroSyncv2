@@ -150,6 +150,21 @@ class Orchestrator:
             except Exception as e:
                 logger.error("Failed to initialise Gmail poller: %s", e)
 
+        # Simulated (HTTP) pollers — for demo/development
+        if self.config.simulated.enabled:
+            for ch_name in self.config.simulated.channel_names:
+                try:
+                    poller = create_poller(ch_name, self.config.simulated)
+                    pollers.append(poller)
+                    logger.info(
+                        "Simulated HTTP poller '%s' initialised (→ %s)",
+                        ch_name, self.config.simulated.simulator_url,
+                    )
+                except Exception as e:
+                    logger.error(
+                        "Failed to initialise simulated poller '%s': %s", ch_name, e,
+                    )
+
         return pollers
 
     # ------------------------------------------------------------------
@@ -221,11 +236,20 @@ class Orchestrator:
 
         if not all_messages:
             logger.debug("No new messages in this cycle")
+            channel_summaries = []
             for poller in self._pollers:
                 empty_result = self._analyser._empty_result(
                     poller.channel_name, self.config.global_poll_interval,
                 )
                 self._store.store_summary(empty_result)
+                channel_summaries.append(empty_result)
+
+            # Always create an aggregated summary so the dashboard
+            # reflects the current (empty) state, not stale old data.
+            aggregated = self._aggregate_analyses(channel_summaries, [])
+            self._aggregated_summaries.append(aggregated)
+            self._store.store_summary(aggregated)
+            self._emit_summary(aggregated)
             return
 
         # ---- Phase 2: Per-channel LLM stress analysis ----

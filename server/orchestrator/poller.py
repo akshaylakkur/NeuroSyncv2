@@ -9,7 +9,7 @@ from abc import ABC, abstractmethod
 from datetime import datetime, timezone
 from typing import Any
 
-from .config import DiscordSettings, EmailSettings
+from .config import DiscordSettings, EmailSettings, SimulatedSettings
 
 logger = logging.getLogger("neurosync.poller")
 
@@ -233,8 +233,16 @@ class EmailPoller(BasePoller):
         }
 
 
-def create_poller(channel_type: str, settings: DiscordSettings | EmailSettings) -> BasePoller:
+def create_poller(
+    channel_type: str,
+    settings: DiscordSettings | EmailSettings | SimulatedSettings,
+) -> BasePoller:
     """Factory: create the appropriate poller for *channel_type*."""
+    # Simulated (HTTP) pollers
+    if channel_type in ("discord_sim", "gmail_sim"):
+        from .simulated_http_poller import SimulatedHttpPoller
+        return SimulatedHttpPoller(channel_type, settings)  # type: ignore[arg-type]
+
     pollers = {
         "discord": DiscordPoller,
         "gmail": EmailPoller,

@@ -95,6 +95,16 @@ class GatewaySettings:
 
 
 @dataclass
+class SimulatedSettings:
+    """Settings for simulated (HTTP-based) pollers."""
+
+    enabled: bool = False
+    channel_names: list[str] = field(default_factory=lambda: ["discord_sim", "gmail_sim"])
+    simulator_url: str = "http://localhost:8081"
+    max_messages_per_poll: int = 50
+
+
+@dataclass
 class StorageSettings:
     """Settings for storing poll results and summaries."""
 
@@ -113,6 +123,7 @@ class OrchestratorConfig:
     gateway: GatewaySettings = field(default_factory=GatewaySettings)
     discord: DiscordSettings = field(default_factory=DiscordSettings)
     email: EmailSettings = field(default_factory=EmailSettings)
+    simulated: SimulatedSettings = field(default_factory=SimulatedSettings)
     llm: LLMSettings = field(default_factory=LLMSettings)
     storage: StorageSettings = field(default_factory=StorageSettings)
     global_poll_interval: float = 15.0  # seconds
@@ -142,6 +153,22 @@ class OrchestratorConfig:
         cfg.email.max_results = int(
             env.get("NEUROSYNC_EMAIL_MAX_RESULTS", str(cfg.email.max_results))
         )
+
+        # Simulated (HTTP) pollers
+        cfg.simulated.enabled = env.get("NEUROSYNC_SIM_MODE", "false").lower() == "true"
+        cfg.simulated.simulator_url = env.get(
+            "NEUROSYNC_SIMULATOR_URL", cfg.simulated.simulator_url
+        )
+        sim_channels = env.get("NEUROSYNC_SIM_CHANNELS")
+        if sim_channels:
+            cfg.simulated.channel_names = [ch.strip() for ch in sim_channels.split(",")]
+
+        # When simulation mode is on, auto-disable real channels
+        if cfg.simulated.enabled:
+            if "NEUROSYNC_DISCORD_ENABLED" not in env:
+                cfg.discord.enabled = False
+            if "NEUROSYNC_EMAIL_ENABLED" not in env:
+                cfg.email.enabled = False
 
         # LLM
         cfg.llm.model = env.get("NEUROSYNC_LLM_MODEL", cfg.llm.model)
@@ -183,8 +210,8 @@ def _apply_dict(cfg: OrchestratorConfig, data: dict[str, Any]) -> None:
     for key, value in data.items():
         if hasattr(cfg, key):
             field_val = getattr(cfg, key)
-            if isinstance(field_val, (DiscordSettings, EmailSettings, LLMSettings,
-                                      GatewaySettings, StorageSettings)):
+            if isinstance(field_val, (DiscordSettings, EmailSettings, SimulatedSettings,
+                                      LLMSettings, GatewaySettings, StorageSettings)):
                 if isinstance(value, dict):
                     for sub_key, sub_val in value.items():
                         if hasattr(field_val, sub_key):

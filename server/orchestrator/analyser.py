@@ -131,8 +131,8 @@ class StressAnalyser:
             )
 
             if proc.returncode != 0:
-                err = stderr.decode().strip()
-                logger.warning("Agent CLI error (rc=%d): %s", proc.returncode, err[:200])
+                # Gateway not available in demo mode — this is expected, not a warning.
+                logger.debug("Agent CLI unavailable (rc=%d) — using keyword fallback", proc.returncode)
                 return None
 
             raw = stdout.decode().strip()
@@ -158,10 +158,10 @@ class StressAnalyser:
             return raw
 
         except asyncio.TimeoutError:
-            logger.warning("Agent CLI timed out after 30s")
+            logger.debug("Agent CLI timed out — using keyword fallback")
             return None
         except FileNotFoundError:
-            logger.warning("openclaw CLI not found — cannot run LLM analysis")
+            logger.debug("openclaw CLI not found — using keyword fallback")
             return None
         except Exception as e:
             logger.debug("Agent CLI error: %s", e)
@@ -178,18 +178,20 @@ class StressAnalyser:
         msg_count = int(msg_match.group(1)) if msg_match else 0
 
         # Keyword-based stress detection
+        # Only include signals that truly indicate a crisis — avoid common
+        # words like "security" (appears in routine audits) or "help" (routine
+        # requests). The thresholds below also require multiple hits to flag.
         crisis_keywords = [
-            "urgent", "critical", "emergency", "asap", "help",
-            "blocked", "broken", "failure", "crash", "fire",
-            "security", "breach", "attack", "downtime",
             "production down", "sev1", "p0", "p1", "outage",
-            "data loss", "compromised", "vulnerability",
+            "data loss", "breach", "compromised", "vulnerability",
+            "attacker gained", "fire drill", "catastrophic failure",
+            "complete failure of", "database corruption",
         ]
         stress_keywords = [
-            "stress", "overwhelmed", "pressure", "deadline",
-            "struggle", "difficult", "hard", "tight",
-            "concern", "worried", "issue", "problem",
-            "overworked", "burnout", "exhausted",
+            "urgent", "critical", "emergency", "asap",
+            "blocked", "broken", "crash", "downtime",
+            "overwhelmed", "deadline", "struggle",
+            "burnout", "exhausted",
         ]
         positive_keywords = [
             "great", "awesome", "good", "done", "completed",
@@ -197,16 +199,19 @@ class StressAnalyser:
             "excellent", "amazing", "fantastic", "solved",
         ]
 
+        # Count unique keyword matches (not total occurrences) so
+        # one message saying "security audit" doesn't single-handedly
+        # push stress levels. Each keyword counted at most once.
         crisis_count = sum(1 for kw in crisis_keywords if kw in text_lower)
         stress_count = sum(1 for kw in stress_keywords if kw in text_lower)
         positive_count = sum(1 for kw in positive_keywords if kw in text_lower)
 
-        # Determine stress level
-        if crisis_count >= 2 or (msg_count > 15 and crisis_count >= 1):
+        # Determine stress level — require multiple signals, not just one
+        if crisis_count >= 2 or (msg_count > 20 and crisis_count >= 1):
             level = "critical"
-        elif crisis_count >= 1 or (msg_count > 10 and stress_count >= 3):
+        elif crisis_count >= 1 and msg_count >= 5:
             level = "high"
-        elif stress_count >= 3 or (msg_count > 20):
+        elif stress_count >= 3 or (msg_count > 15 and stress_count >= 2):
             level = "moderate"
         elif stress_count >= 1 and positive_count <= stress_count:
             level = "low"

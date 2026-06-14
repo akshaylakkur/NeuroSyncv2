@@ -382,6 +382,61 @@ class MessageGenerator:
 
         return batch
 
+    def next_batch_weighted(
+        self, batch_size: int, category_weights: dict[str, float],
+    ) -> list[SimMessage]:
+        """Get a batch with messages distributed by category weights.
+
+        Scans through the pool and collects messages of each target category
+        in proportion to the given weights. Messages are consumed sequentially
+        from the pool — no random access, so the pool advances predictably.
+        """
+        if not self._pool:
+            self.generate_pool()
+        if batch_size <= 0:
+            return []
+
+        # Normalise weights into target counts per category
+        total_weight = sum(category_weights.values()) or 1.0
+        targets: dict[str, int] = {}
+        for cat, w in category_weights.items():
+            targets[cat] = max(0, int(batch_size * w / total_weight))
+
+        # Remaining slots go to the highest-weighted category
+        allocated = sum(targets.values())
+        if allocated < batch_size and category_weights:
+            best_cat = max(category_weights, key=category_weights.get)
+            targets[best_cat] = targets.get(best_cat, 0) + (batch_size - allocated)
+
+        # Scan through remaining pool and collect messages by category
+        batch: list[SimMessage] = []
+        remaining_pool = self._pool[self._index:]
+        for msg in remaining_pool:
+            if len(batch) >= batch_size:
+                break
+            cat = msg.metadata.get("category", "neutral")
+            needed = targets.get(cat, 0)
+            if needed > 0:
+                batch.append(msg)
+                targets[cat] = needed - 1
+                self._index += 1
+
+        # If we didn't fill the batch (pool too small), take whatever's left
+        if len(batch) < batch_size:
+            remaining = self._pool[self._index:]
+            for msg in remaining:
+                if len(batch) >= batch_size:
+                    break
+                batch.append(msg)
+                self._index += 1
+
+        # Wrap around if exhausted
+        if not batch and self._index >= len(self._pool):
+            self._index = 0
+            return self.next_batch_weighted(batch_size, category_weights)
+
+        return batch
+
     @property
     def remaining(self) -> int:
         return max(0, len(self._pool) - self._index)
